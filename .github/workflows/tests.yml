@@ -1,0 +1,34 @@
+# .github/workflows/tests.yml
+
+name: Pipeline CI/CD
+
+# Déclenchement au push sur n'importe quelle branche
+on:
+  push:
+    branches:
+      - main
+      - master
+
+# Définition des JOBS
+jobs:
+
+  # JOB 1 : Compilation et exécution des tests existants
+  Compilation:
+    runs-on: ubuntu-latest
+    steps:
+      # Étape 1 : Télécharge le code du dépôt
+      - name: Checkout du code
+        uses: actions/checkout@v4
+      
+      # Étape 2 : Installe CMake (pour s'assurer qu'il est disponible)
+      - name: Installer CMake
+        run: sudo apt-get update && sudo apt-get install -y cmake
+      
+      # Étape 3 : Compilation et test
+      - name: Compilation et Tests CTest
+        run: |
+          mkdir build
+          cd build
+          cmake ..
+          make
+          ctest # Exécute tous les tests définis dans CMakeLists.txt
