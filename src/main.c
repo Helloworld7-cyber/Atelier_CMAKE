@@ -31,5 +31,19 @@ int main(int argc, char *argv[]){
 	else {printf("Erreur de parametres");}
 	return 0;
 }
+// src/main.c (Extrait de la logique main)
+
+// ...
+    if (strcmp(operation, "car") == 0) {
+        if (argc != 3) {
+             fprintf(stderr, "Usage: %s car <nombre>\n", argv[0]);
+             return 1;
+        }
+        int a = atoi(argv[2]); // L'entier à mettre au carré
+        int result = car(a);
+        printf("%d\n", result); // N'affiche que le résultat (25) pour les tests CTest
+    } 
+    // ... (autres opérations)
+// ...
 
 		
