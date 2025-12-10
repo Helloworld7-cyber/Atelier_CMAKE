@@ -6,7 +6,7 @@ on: push
 
 jobs:
   # ----------------------------------------------------
-  # JOB 1 : COMPILATION (Point d'entrée du pipeline)
+  # JOB 1 : COMPILATION
   # ----------------------------------------------------
   Compilation:
     runs-on: ubuntu-latest
@@ -23,56 +23,77 @@ jobs:
           cd build
           cmake ..
           make
-          ctest # Exécute tous les tests (add, sub, mul, div, carre)
-          # Ce job sert de vérification globale de base
+          ctest # Exécute tous les tests CTest (vérification globale)
   
   # ----------------------------------------------------
-  # JOBS DE TESTS PARALLÈLES (Dépendent de la compilation réussie)
+  # JOBS DE TESTS PARALLÈLES (Dépendent de la compilation)
   # ----------------------------------------------------
   
   Test_Add:
     runs-on: ubuntu-latest
-    needs: Compilation # Démarre UNIQUEMENT après Compilation
+    needs: Compilation 
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
       - name: Recompiler et Tester la fonction add
         run: |
-          mkdir build; cd build
-          cmake ..; make
-          ./src/calculator add 10 5 | grep "15" # Exemple de test avec vérification
+          mkdir build; cd build; cmake ..; make
+          ./src/calculator add 10 5 | grep "15"
 
   Test_Sub:
     runs-on: ubuntu-latest
-    needs: Compilation # Démarre UNIQUEMENT après Compilation
+    needs: Compilation 
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
       - name: Recompiler et Tester la fonction sub
         run: |
-          mkdir build; cd build
-          cmake ..; make
-          ./src/calculator sub 10 5 | grep "5" # Exemple de test avec vérification
-          
+          mkdir build; cd build; cmake ..; make
+          ./src/calculator sub 10 5 | grep "5"
+
+  # NOUVEAU JOB : Multiplication
+  Test_Mul:
+    runs-on: ubuntu-latest
+    needs: Compilation 
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+      - name: Recompiler et Tester la fonction mul
+        run: |
+          mkdir build; cd build; cmake ..; make
+          ./src/calculator mul 5 5 | grep "25"
+
+  # NOUVEAU JOB : Division
+  Test_Div:
+    runs-on: ubuntu-latest
+    needs: Compilation 
+    steps:
+      - name: Checkout du code
+        uses: actions/checkout@v4
+      - name: Recompiler et Tester la fonction div
+        run: |
+          mkdir build; cd build; cmake ..; make
+          # Attention: la division de 1 par 5 donne 0.2. Le test doit le refléter.
+          ./src/calculator div 1 5 | grep "0.200000" 
+
   Test_Carre:
     runs-on: ubuntu-latest
-    needs: Compilation # Démarre UNIQUEMENT après Compilation
+    needs: Compilation 
     steps:
       - name: Checkout du code
         uses: actions/checkout@v4
       - name: Recompiler et Tester la fonction carre
         run: |
-          mkdir build; cd build
-          cmake ..; make
-          ./src/calculator car 5 | grep "25" # Test de votre nouvelle fonction
+          mkdir build; cd build; cmake ..; make
+          ./src/calculator car 5 | grep "25" 
 
   # ----------------------------------------------------
-  # JOB FINAL : DÉPLOIEMENT (Dépend de tous les tests)
+  # JOB FINAL : DÉPLOIEMENT
   # ----------------------------------------------------
   Deploy:
     runs-on: ubuntu-latest
-    # Démarre UNIQUEMENT si TOUS les jobs de test précédents ont réussi
-    needs: [Test_Add, Test_Sub, Test_Carre] 
+    # Dépend de TOUS les 5 jobs de test pour s'assurer qu'ils ont tous réussi
+    needs: [Test_Add, Test_Sub, Test_Mul, Test_Div, Test_Carre] 
     steps:
       - name: Déploiement de la solution
         run: echo "🎉 Déploiement de la solution réussi !"
