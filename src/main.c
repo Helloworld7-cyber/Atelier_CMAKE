@@ -4,46 +4,51 @@
 #include "./../include/calculator.h"
 
 int main(int argc, char *argv[]){
-	if (argc == 4)
-	{
-	char* op = argv[1];
-	char* a = argv[2];
-	char* b = argv[3];
-	double r = 0;
-	if (strcmp(op, "add") == 0) {
-		r = _add(atof(a), atof(b));
-		printf("%lf",r);
-	}
-	else if (strcmp(op, "sub") == 0) {
-		r = _sub(atof(a), atof(b));
-		printf("%lf",r);
-	}
-	else if (strcmp(op, "mul") == 0) {
-		r = _mul(atof(a), atof(b));
-		printf("%lf",r);
-	}
-	else if (strcmp(op, "div") == 0) {
-		r = _div(atof(a), atof(b));
-		printf("%lf",r);
-	}
-	else {printf("Erreur de parametres");}
-	}
-	else {printf("Erreur de parametres");}
-	return 0;
-}
-// src/main.c (Extrait de la logique main)
+    // Déclarations nécessaires pour toutes les opérations
+    char* op = argv[1];
+    double r = 0;
 
-// ...
-    if (strcmp(operation, "car") == 0) {
-        if (argc != 3) {
-             fprintf(stderr, "Usage: %s car <nombre>\n", argv[0]);
-             return 1;
+    // --- LOGIQUE POUR LES OPÉRATIONS À DEUX ARGUMENTS (add, sub, mul, div) ---
+    if (argc == 4)
+    {
+        char* a = argv[2];
+        char* b = argv[3];
+
+        if (strcmp(op, "add") == 0) {
+            r = _add(atof(a), atof(b));
+            printf("%lf", r);
         }
-        int a = atoi(argv[2]); // L'entier à mettre au carré
-        int result = car(a);
-        printf("%d\n", result); // N'affiche que le résultat (25) pour les tests CTest
+        else if (strcmp(op, "sub") == 0) {
+            r = _sub(atof(a), atof(b));
+            printf("%lf", r);
+        }
+        else if (strcmp(op, "mul") == 0) {
+            r = _mul(atof(a), atof(b));
+            printf("%lf", r);
+        }
+        else if (strcmp(op, "div") == 0) {
+            r = _div(atof(a), atof(b));
+            printf("%lf", r);
+        }
+        // PAS DE 'else' ICI, on vérifie d'abord l'opération "car" ci-dessous
     } 
-    // ... (autres opérations)
-// ...
+    // --- LOGIQUE POUR L'OPÉRATION À UN ARGUMENT (car) ---
+    else if (argc == 3) // ⬅️ VÉRIFIEZ LE NOUVEAU NOMBRE D'ARGUMENTS
+    {
+        // L'opération est toujours argv[1], le nombre est argv[2]
+        if (strcmp(op, "car") == 0) { 
+            int a = atoi(argv[2]); // L'entier à mettre au carré
+            int result = car(a);
+            printf("%d\n", result); // Affiche le résultat pour le test CTest
+        }
+        else { 
+            printf("Erreur: Opération non supportée ou nombre d'arguments incorrect pour cette opération.\n"); 
+        }
+    } 
+    // --- GESTION D'ERREUR FINALE ---
+    else {
+        printf("Erreur de parametres: Nombre d'arguments incorrect (attendu 3 ou 4).\n");
+    }
 
-		
+    return 0;
+}
