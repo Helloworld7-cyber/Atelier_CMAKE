@@ -4,7 +4,12 @@
 #include "./../include/calculator.h"
 
 int main(int argc, char *argv[]){
-    // Déclarations nécessaires pour toutes les opérations
+    // Vérification minimale des arguments
+    if (argc < 3 || argc > 4) {
+        printf("Erreur: Nombre d'arguments incorrect (attendu 3 ou 4).\n");
+        return 1;
+    }
+    
     char* op = argv[1];
     double r = 0;
 
@@ -16,39 +21,39 @@ int main(int argc, char *argv[]){
 
         if (strcmp(op, "add") == 0) {
             r = _add(atof(a), atof(b));
-            printf("%lf", r);
+            printf("%lf\n", r); // Ajout d'un saut de ligne pour la propreté des logs
         }
         else if (strcmp(op, "sub") == 0) {
             r = _sub(atof(a), atof(b));
-            printf("%lf", r);
+            printf("%lf\n", r);
         }
         else if (strcmp(op, "mul") == 0) {
             r = _mul(atof(a), atof(b));
-            printf("%lf", r);
+            printf("%lf\n", r);
         }
         else if (strcmp(op, "div") == 0) {
             r = _div(atof(a), atof(b));
-            printf("%lf", r);
+            printf("%lf\n", r);
         }
-        // PAS DE 'else' ICI, on vérifie d'abord l'opération "car" ci-dessous
+        else {
+            printf("Erreur: Opération non supportée.\n"); 
+            return 1;
+        }
     } 
     // --- LOGIQUE POUR L'OPÉRATION À UN ARGUMENT (car) ---
-    else if (argc == 3) // ⬅️ VÉRIFIEZ LE NOUVEAU NOMBRE D'ARGUMENTS
+    else if (argc == 3) 
     {
         // L'opération est toujours argv[1], le nombre est argv[2]
         if (strcmp(op, "car") == 0) { 
-            int a = atoi(argv[2]); // L'entier à mettre au carré
+            int a = atoi(argv[2]); 
             int result = car(a);
-            printf("%d\n", result); // Affiche le résultat pour le test CTest
+            printf("%d\n", result); 
         }
         else { 
             printf("Erreur: Opération non supportée ou nombre d'arguments incorrect pour cette opération.\n"); 
+            return 1;
         }
     } 
-    // --- GESTION D'ERREUR FINALE ---
-    else {
-        printf("Erreur de parametres: Nombre d'arguments incorrect (attendu 3 ou 4).\n");
-    }
-
+    
     return 0;
 }
